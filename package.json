@@ -1,0 +1,31 @@
+{
+  "name": "todo-list-backend",
+  "version": "1.0.0",
+  "description": "Backend for a ToDo List",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "lint": "eslint"
+  },
+  "keywords": [
+    "Backend",
+    "Code",
+    "todo-list",
+    "ExpressJS",
+    "Database"
+  ],
+  "author": "Alejandro Salas Barceló",
+  "license": "ISC",
+  "devDependencies": {
+    "@faker-js/faker": "^9.0.1",
+    "eslint": "^9.11.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "nodemon": "^3.1.7",
+    "prettier": "^3.3.3"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}
