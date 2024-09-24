@@ -18,7 +18,7 @@ class UsersService {
         password: faker.fakerES.lorem.slug(2),
         firstName: faker.fakerES.person.firstName(),
         lastName: faker.fakerES.person.lastName(),
-        birthdate: faker.fakerES.date.anytime(),
+        birthdate: faker.fakerES.date.birthdate(),
       });
     }
   }

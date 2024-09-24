@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require('joi').extend(require('@joi/date'));
 
 const id = Joi.string().uuid();
 const username = Joi.string().alphanum().min(3).max(15);
@@ -6,7 +6,7 @@ const mail = Joi.string().email();
 const password = Joi.string().alphanum().min(8);
 const firstName = Joi.string().regex(/^[a-zA-Z-]*(\s*[a-zA-Z-])+$/);
 const lastName = Joi.string().regex(/^[a-zA-Z-]*(\s*[a-zA-Z-])+$/);
-const birthdate = Joi.date().iso();
+const birthdate = Joi.date().format('YYYY/MM/DD')
 
 const createUserDto = Joi.object({
   username: username.required(),

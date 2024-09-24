@@ -11,7 +11,9 @@ router.get('/', async (req, res) => {
   res.json(getUsers);
 });
 
-router.get('/:id', validatorHandler(getUserDto, 'params'), async (req, res, next) => {
+router.get('/:id',
+  validatorHandler(getUserDto, 'params'),
+  async (req, res, next) => {
   try {
     const { id } = req.params;
     const findUser = await service.findOne(id);
@@ -22,13 +24,18 @@ router.get('/:id', validatorHandler(getUserDto, 'params'), async (req, res, next
 
 })
 
-router.post('/', validatorHandler(createUserDto, 'body'), async (req, res) => {
+router.post('/',
+  validatorHandler(createUserDto, 'body'),
+  async (req, res) => {
   const body = req.body;
   const newUser = await service.create(body);
   res.status(201).json(newUser);
 })
 
-router.put('/:id', validatorHandler(updateUserDto, 'body'), async (req, res, next) => {
+router.put('/:id',
+  validatorHandler(getUserDto, 'params'),
+  validatorHandler(updateUserDto, 'body'),
+  async (req, res, next) => {
   try {
     const { id } = req.params;
     const body = req.body;
@@ -39,7 +46,10 @@ router.put('/:id', validatorHandler(updateUserDto, 'body'), async (req, res, nex
   }
 })
 
-router.patch('/:id', validatorHandler(updateUserDto, 'body'), async (req, res, next) => {
+router.patch('/:id',
+  validatorHandler(getUserDto, 'params'),
+  validatorHandler(updateUserDto, 'body'),
+  async (req, res, next) => {
   try {
     const { id } = req.params;
     const body = req.body;
@@ -50,7 +60,9 @@ router.patch('/:id', validatorHandler(updateUserDto, 'body'), async (req, res, n
   }
 })
 
-router.delete('/:id', validatorHandler(deleteUserDto, 'params'), async (req, res, next) => {
+router.delete('/:id',
+  validatorHandler(deleteUserDto, 'params'),
+  async (req, res, next) => {
   try {
     const { id } = req.params;
     const deleteUser = await service.delete(id);
