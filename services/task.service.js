@@ -1,69 +1,38 @@
-const faker = require('@faker-js/faker');
 const boom = require('@hapi/boom');
+const { models } = require('../libs/sequelize');
 
 class TasksService {
 
-  constructor(){
-    this.tasks = [];
-    this.generate();
+  constructor() {}
+  
+  async create(data) {
+    const newTask = await models.Task.create(data);
+    return newTask;
   }
 
-  generate(){
-    const limit = 5;
-    for (let i = 0; i < limit; i++){
-      this.tasks.push({
-        id: faker.fakerES.string.uuid(),
-        name: faker.fakerES.lorem.word(8),
-        desription: faker.fakerES.lorem.sentence(6),
-        status: 'Pending',
-        createdAt: faker.fakerES.date.recent(),
-      });
-    }
+  async list() {
+    const response = await models.Task.findAll();
+    return response;
   }
 
-  async find(){
-    return this.tasks;
-  }
-
-  async findOne(id){
-    const task = this.tasks.find(item => item.id === id);
+  async find(id) {
+    const task = await models.Task.findByPk(id);
     if (!task) {
       throw boom.notFound('Task not found');
     }
     return task;
   }
 
-  async create(data){
-    const newTask = {
-      id: faker.fakerES.string.uuid(),
-      ...data,
-      status: "Pending",
-      createdAt: faker.fakerES.date.soon()
-    }
-    this.tasks.push(newTask);
-    return newTask;
+  async update(id, data) {
+    const task = await this.find(id);
+    const response = await task.update(data);
+    return response;
   }
 
-  async update(id, data){
-    const index = this.tasks.findIndex(item => item.id === id);
-    if (index === -1) {
-      throw boom.notFound('Task not found');
-    }
-    const task = this.tasks[index]
-    this.tasks[index] = {
-      ...task,
-      ...data
-    }
-    return this.tasks[index];
-  }
-
-  async delete(id){
-    const index = this.tasks.findIndex(item => item.id === id);
-    if (index === -1) {
-      throw boom.notFound('Task not found');
-    }
-    this.tasks.splice(index, 1);
-    return ({message: 'Task succesfully removed'});
+  async delete(id) {
+    const task = await this.find(id);
+    await task.destroy();
+    return {message: 'Task succesfully removed'};
   }
 }
 

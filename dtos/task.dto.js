@@ -1,19 +1,21 @@
 const Joi = require('joi');
 
-const id = Joi.string().uuid();
-const name = Joi.string().alphanum().min(3).max(15);
-const description = Joi.string().alphanum().min(3).max(25);
-const status = Joi.string().alphanum().min(3).max(10);
+const id = Joi.number();
+const userId = Joi.number();
+const title = Joi.string().regex(/^[a-zA-Z-]*(\s*[a-zA-Z-])+$/).min(3).max(50);
+const description = Joi.string().regex(/^[a-zA-Z-]*(\s*[a-zA-Z-])+$/).min(3).max(128);
+const isCompleted = Joi.boolean();
 
 const createTaskDto = Joi.object({
-  name: name.required(),
+  userId: userId.required(),
+  title: title.required(),
   description: description.required()
 });
 
 const updateTaskDto = Joi.object({
-  name: name,
+  title: title,
   description: description,
-  status: status
+  isCompleted: isCompleted
 });
 
 const getTaskDto = Joi.object({

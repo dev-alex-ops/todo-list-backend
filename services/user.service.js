@@ -1,68 +1,38 @@
-const faker = require('@faker-js/faker');
 const boom = require('@hapi/boom');
+const { models } = require('../libs/sequelize');
 
 class UsersService {
 
-  constructor(){
-    this.users = [];
-    this.generate();
+  constructor() {}
+
+  async create(data) {
+    console.log(data);
+    // const newUser = await models.User.create(data);
+    return newUser;
   }
 
-  generate() {
-    const limit = 5;
-    for (let i = 0; i < limit; i++) {
-      this.users.push({
-        id: faker.fakerES.string.uuid(),
-        username: faker.fakerES.internet.userName(),
-        mail: faker.fakerES.internet.email(),
-        password: faker.fakerES.lorem.slug(2),
-        firstName: faker.fakerES.person.firstName(),
-        lastName: faker.fakerES.person.lastName(),
-        birthdate: faker.fakerES.date.birthdate(),
-      });
-    }
+  async list() {
+    const response = await models.User.findAll();
+    return response;
   }
 
-  async find() {
-    return this.users;
-  }
-
-  async findOne(id) {
-    const user = this.users.find(item => item.id === id);
+  async find(id) {
+    const user = await models.User.findByPk(id);
     if (!user) {
       throw boom.notFound('User not found');
     }
     return user;
   }
 
-  async create(data) {
-    const newUser = {
-      id: faker.fakerES.string.uuid(),
-      ...data
-    }
-    this.users.push(newUser);
-    return newUser;
-  }
-
   async update(id, data) {
-    const index = this.users.findIndex(item => item.id === id);
-    if (index === -1){
-      throw boom.notFound('User not found');
-    }
-    const user = this.users[index]
-    this.users[index] = {
-      ...user,
-      ...data
-    }
-    return this.users[index];
+    const user = await this.find(id);
+    const response = await user.update(data);
+    return response;
   }
 
   async delete(id) {
-    const index = this.users.findIndex(item => item.id === id);
-    if (index === -1){
-      throw boom.notFound('User not found');
-    }
-    this.users.splice(index,1);
+    const user = await this.find(id);
+    await user.destroy();
     return {message: 'User succesfully removed from database'};
   }
 }

@@ -8,7 +8,7 @@ const service = new TasksService();
 
 
 router.get('/', async (req, res) => {
-  const getTasks = await service.find();
+  const getTasks = await service.list();
   res.json(getTasks);
 })
 
@@ -17,7 +17,7 @@ router.get('/:id',
   async (req, res, next) => {
   try {
     const { id } = req.params;
-    const findTask = await service.findOne(id);
+    const findTask = await service.find(id);
     res.json(findTask);
   } catch (error) {
     next(error);
@@ -25,7 +25,7 @@ router.get('/:id',
 })
 
 router.post('/',
-  validatorHandler(createTaskDto, 'params'),
+  validatorHandler(createTaskDto, 'body'),
   async (req, res) => {
     const body = req.body;
     const newTask = await service.create(body);

@@ -7,7 +7,7 @@ const router = express.Router();
 const service = new UsersService();
 
 router.get('/', async (req, res) => {
-  const getUsers = await service.find();
+  const getUsers = await service.list();
   res.json(getUsers);
 });
 
@@ -16,7 +16,7 @@ router.get('/:id',
   async (req, res, next) => {
   try {
     const { id } = req.params;
-    const findUser = await service.findOne(id);
+    const findUser = await service.find(id);
     res.json(findUser);
   } catch (error) {
     next(error);
