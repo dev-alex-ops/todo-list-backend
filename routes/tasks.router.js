@@ -1,78 +1,63 @@
 const express = require('express');
-const faker = require('@faker-js/faker');
+const TasksService = require('../services/task.service');
+const validatorHandler = require('../middlewares/validator.handler');
+const {createTaskDto, updateTaskDto, getTaskDto, deleteTaskDto} = require('../dtos/task.dto');
 
 const router = express.Router();
+const service = new TasksService();
 
 
-router.get('/', (req, res) => {
-    const tasks = []
-
-    for (let i = 0; i < 50; i++) {
-        const id = i+1
-        const name = faker.fakerES.lorem.sentence(10);
-        const description = faker.fakerES.lorem.paragraph(3);
-        const status = 'pending';
-        const createdAt = faker.fakerES.date.anytime();
-        tasks.push({
-            id,
-            name,
-            description,
-            status,
-            createdAt
-        })
-    }
-
-    res.json(tasks)
+router.get('/', async (req, res) => {
+  const getTasks = await service.find();
+  res.json(getTasks);
 })
-  
-router.get('/:id', (req, res) => {
+
+router.get('/:id', validatorHandler(getTaskDto, 'params'), async (req, res, next) => {
+  try {
     const { id } = req.params;
-    res.json({
-      id,
-      "name": faker.fakerES.lorem.sentence(10),
-      "description": faker.fakerES.lorem.paragraph(3),
-      "status" : "pending",
-      "createdAt": faker.fakerES.date.anytime(),
-    })
-})
-  
-// Obtener una tarea específica de un usuario específico (Dos parámetros)
-router.get(':taskId/users/:userId', (req, res) => {
-    const { userId, taskId } = req.params;
-    res.json({
-      userId,
-      taskId,
-      "name": "Supermercado",
-      "description": "Comprar pan, leche y huevos",
-      "status": "pending",
-      "createdAt": "2024/09/23"
-    })
+    const findTask = await service.findOne(id);
+    res.json(findTask);
+  } catch (error) {
+    next(error);
+  }
 })
 
-router.post('/', (req, res) => {
+router.post('/', validatorHandler(createTaskDto, 'params'), async (req, res) => {
     const body = req.body;
-    res.json({
-        message: "Creado",
-        body,
-    })
+    const newTask = await service.create(body);
+    res.json({newTask});
 })
 
-router.patch('/:id', (req, res) => {
+router.put('/:id', validatorHandler(updateTaskDto, 'body'), async (req, res, next) => {
+  try {
     const { id } = req.params;
     const body = req.body;
-    res.json({
-        message: "Updated",
-        id,
-        body,
-    })
+    const updatedTask = await service.update(id, body);
+    res.json(updatedTask);
+  } catch (error) {
+    next(error);
+  }
 })
 
-router.delete('/:id', (req, res) => {
+router.patch('/:id', validatorHandler(updateTaskDto, 'body'), async (req, res, next) => {
+  try {
     const { id } = req.params;
-    res.json({
-        message: "Deleted",
-        id
-    })
+    const body = req.body;
+    const updatedTask = await service.update(id, body);
+    res.json(updatedTask);
+  } catch (error) {
+    next(error);
+  }
+})
+
+router.delete('/:id', validatorHandler(deleteTaskDto, 'params'), async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const deletedTask = await service.delete(id);
+    res.json(deletedTask);
+  } catch (error) {
+    next(error);
+  }
 })
 
 module.exports = router;

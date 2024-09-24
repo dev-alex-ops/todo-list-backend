@@ -1,70 +1,63 @@
 const express = require('express');
-const faker = require('@faker-js/faker');
+const UsersService = require('../services/user.service');
+const validatorHandler = require('../middlewares/validator.handler');
+const {createUserDto, updateUserDto, getUserDto, deleteUserDto} = require('../dtos/user.dto');
 
 const router = express.Router();
+const service = new UsersService();
 
-// Obtener una lista completa de usuarios
-router.get('/', (req, res) => {
-    const users = [];
-    for (let i = 0; i < 20; i++) {
-      users.push({
-        id: i+1,
-        username: faker.fakerES.internet.userName(),
-        mail: faker.fakerES.internet.email(),
-        fisrtName: faker.fakerES.person.firstName(),
-        lastName: faker.fakerES.person.lastName(),
-        birthdate: faker.fakerES.date.anytime(),
-      })
-    }
-  
-    const { limit, offset } = req.query;
-    if (limit && offset) {
-      res.json({
-        limit,
-        offset
-      })
-    } else {
-      res.json(users)
-    }
-})
-  
-// Obtener un usuario por el id (Enviado por parámetro)
-router.get('/:id', (req, res) => {
+router.get('/', async (req, res) => {
+  const getUsers = await service.find();
+  res.json(getUsers);
+});
+
+router.get('/:id', validatorHandler(getUserDto, 'params'), async (req, res, next) => {
+  try {
     const { id } = req.params;
-    res.json({
-      "id": id,
-      "username": "paco",
-      "mail": "pacopepe@gmail.com",
-      "firstName": "Francisco José",
-      "lastName": "Papito Muñaño",
-      "birthdate": "1992/10/04",
-    })
+    const findUser = await service.findOne(id);
+    res.json(findUser);
+  } catch (error) {
+    next(error);
+  }
+
 })
 
-router.post('/', (req, res) => {
+router.post('/', validatorHandler(createUserDto, 'body'), async (req, res) => {
   const body = req.body;
-  res.json({
-    message: "Created",
-    data: body
-  })
+  const newUser = await service.create(body);
+  res.status(201).json(newUser);
 })
 
-router.patch('/:id', (req, res) => {
-  const { id } = req.params;
-  const body = req.body;
-  res.json({
-    message: "Updated",
-    data: body,
-    id
-  })
+router.put('/:id', validatorHandler(updateUserDto, 'body'), async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const body = req.body;
+    const updatedUser = await service.update(id, body);
+    res.json(updatedUser);
+  } catch (error) {
+    next(error);
+  }
 })
 
-router.delete('/:id', (req, res) => {
-  const { id } = req.params;
-  res.json({
-    message: "Deleted",
-    id
-  })
+router.patch('/:id', validatorHandler(updateUserDto, 'body'), async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const body = req.body;
+    const updatedUser = await service.update(id, body);
+    res.json(updatedUser);
+  } catch (error) {
+    next(error);
+  }
+})
+
+router.delete('/:id', validatorHandler(deleteUserDto, 'params'), async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const deleteUser = await service.delete(id);
+    res.json(deleteUser);
+  } catch (error) {
+    next(error);
+  }
 })
 
 module.exports = router;
