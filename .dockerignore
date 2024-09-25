@@ -1,0 +1,6 @@
+postgres_data
+.editorconfig
+.eslintrc.json
+.gitignore
+docker-compose.yml
+LICENSE

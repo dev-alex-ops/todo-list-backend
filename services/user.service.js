@@ -6,8 +6,7 @@ class UsersService {
   constructor() {}
 
   async create(data) {
-    console.log(data);
-    // const newUser = await models.User.create(data);
+    const newUser = await models.User.create(data);
     return newUser;
   }
 

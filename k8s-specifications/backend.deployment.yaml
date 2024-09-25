@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: docker.io/devcodeops/todo-list-backend
+        env:
+          - name: NODE_ENV
+            value: dev
+          - name: PORT
+            value: "3000"
+          - name: DB_USER
+            value: admin
+          - name: DB_PASSWORD
+            value: admin1234
+          - name: DB_HOST
+            value: database-service
+          - name: DB_NAME
+            value: todo_list
+          - name: DB_PORT
+            value: "5432"
+          - name: DIALECT
+            value: postgres
+        ports:
+        - containerPort: 3000

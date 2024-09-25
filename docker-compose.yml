@@ -17,3 +17,22 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=root
     ports:
       - 5050:80
+
+  backend:
+    image: todo-list-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=dev
+      - PORT=3000
+      - DB_USER=admin
+      - DB_PASSWORD=admin1234
+      - DB_HOST=postgres
+      - DB_NAME=todo_list
+      - DB_PORT=5432
+      - DIALECT=postgres
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres

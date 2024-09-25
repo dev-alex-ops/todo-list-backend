@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pagadmin-deployment
+  labels:
+    app: pagadmin
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: pagadmin
+  template:
+    metadata:
+      labels:
+        app: pagadmin
+    spec:
+      containers:
+      - name: pagadmin
+        image: docker.io/dpage/pgadmin4
+        env:
+          - name: PGADMIN_DEFAULT_EMAIL
+            value: admin@mail.com
+          - name: PGADMIN_DEFAULT_PASSWORD
+            value: root
+        ports:
+        - containerPort: 8080
